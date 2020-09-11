@@ -1,0 +1,7 @@
+[defaults]
+url=https://d-sentry.visioneschool.com/
+org=sentry
+project=your-project-name
+
+[auth]
+token=null

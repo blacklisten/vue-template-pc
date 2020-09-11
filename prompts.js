@@ -30,6 +30,12 @@ module.exports = [
     default: true
   },
   {
+    name: "sentry",
+    type: "confirm",
+    message: "是否需要集成sentry",
+    default: true
+  },
+  {
     name: "wxui",
     type: "confirm",
     message: "wxui",

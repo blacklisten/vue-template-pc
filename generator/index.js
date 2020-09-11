@@ -1,6 +1,4 @@
-const fs = require('fs')
-const path = require('path')
-
+const { sentryConfig, extendPackage, render } = require('./config')
 module.exports = (api, options, rootOptions) => {
   // 安装一些基础的公共库
   if (options.vuex) {
@@ -54,53 +52,21 @@ module.exports = (api, options, rootOptions) => {
       }
     })
   }
-  api.extendPackage({
-    scripts: {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "lint": "vue-cli-service lint",
-      "stylelint": "stylelint \"**/*.(scss|vue)\"",
-      "lint:fix": "stylelint \"**/*.(scss|vue)\" --fix",
-      "jslint": "eslint --ext .tsx,.ts,.vue ./src ./utils ./vue.config.js",
-      "fix:js": "eslint --ext .tsx,.ts,.vue --fix ./src ./utils ./vue.config.js"
-    },
-    devDependencies: {
-      "css-properties-sorting": "^1.0.10",
-      "lint-staged": "^9.5.0",
-      "postcss-html": "^0.36.0",
-      "stylelint": "^13.4.0",
-      "stylelint-config-recommended-scss": "^4.2.0",
-      "stylelint-config-standard": "^20.0.0",
-      "stylelint-order": "^4.0.0",
-      "stylelint-scss": "^3.17.2",
-      "stylelint-webpack-plugin": "^2.0.0"
-    },
-    gitHooks: {
-      "pre-commit": "lint-staged"
-    },
-    "lint-staged": {
-      "src/**/*.{ts,tsx,vue}": [
-        "npm run jslint",
-        "git add"
-      ],
-      "*.{scss,vue}": [
-        "npm run stylelint",
-        "git add"
-      ]
+
+  // 设置sentry相关
+  if (options.sentry) {
+    render['./.sentryclirc'] = './template/_sentryclirc'
+    extendPackage.devDependencies = {
+      ...extendPackage.devDependencies,
+      ...sentryConfig.devDependencies
     }
-  })
+  }
+
+  api.extendPackage(extendPackage)
   // 公共基础目录和文件
   api.render('./template')
 
-  api.render({
-    './.eslintrc.js': './template/_eslintrc.js',
-    './.eslintignore': './template/_eslintignore',
-    './.editorconfig': './template/_editorconfig',
-    './.editorconfig': './template/_editorconfig',
-    './.gitignore': './template/_gitignore',
-    './.prettierignore': './template/_prettierignore',
-    './.prettierrc.js': './template/_prettierrc.js',
-    './.stylelintignore': './template/_stylelintignore',
-    './.stylelintrc.js': './template/_stylelintrc.js'
-  })
+  
+  api.render(render)
+
 }

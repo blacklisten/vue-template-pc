@@ -1,13 +1,21 @@
 // @ts-nocheck
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const path = require('path')
+<% if (options.sentry) { %>
+const SentryCliPlugin = require('@sentry/webpack-plugin')
+const { name, version } = require('./package.json')
+<% } %>
+const styeLint = new StyleLintPlugin({
+  files: ['src/**/*.{vue,scss}'],
+  fix: false
+})
 
 module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
   // 生产环境 sourceMap
-  productionSourceMap: false,
+  productionSourceMap: <%= options.sentry ? 'true' : 'false' %>,
   // 配置高于chainWebpack中关于 css loader 的配置
   css: {
     // 是否开启支持 foo.module.css 样式
@@ -26,12 +34,24 @@ module.exports = {
       .set('@', path.resolve('./src'))
       .set('@utils', path.resolve('./utils'))
   },
-  configureWebpack: {
-    plugins: [
-      new StyleLintPlugin({
-        files: ['src/**/*.{vue,scss}'],
-        fix: false
-      }),
-    ],
+  configureWebpack: config => {
+    const configNew = {
+      plugins: [styeLint]
+    }
+    if (process.env.NODE_ENV === 'production') {
+      // do something for production
+    <% if (options.sentry) { %>
+      const sentry = new SentryCliPlugin({
+        include: './dist', // 作用的文件夹
+        release: `${name}@${version}`, // 版本号，需要维护package中的name和version字段
+        configFile: 'sentry.properties', // 不用改
+        ignore: ['node_modules', 'webpack.config.js'],
+        urlPrefix: `~${config.output.publicPath}` // 部署的js文件路径， 如www.example.com/url/prefix/xxx.js，需要填写/url/prefix
+      })
+      configNew.plugins.push(sentry)
+    <% } %>
+      
+    }
+    return configNew
   }
 }

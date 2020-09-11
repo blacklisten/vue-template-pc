@@ -2,6 +2,28 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import filter from './filters/index'
+<%_ if (options.sentry) { _%>
+import * as Sentry from '@sentry/browser'
+import { Vue as VueIntegration, CaptureConsole } from '@sentry/integrations'
+import { Integrations } from '@sentry/tracing'
+import { name, version} from '../package.json'
+
+Sentry.init({
+  dsn: '', // sentry中dsn
+  release: `${name}@${version}`, // 版本
+  integrations: [
+    new VueIntegration({
+      Vue,
+      tracing: true
+    }),
+    new Integrations.BrowserTracing(),
+    new CaptureConsole({
+      levels: ['error']
+    })
+  ]
+})
+<%_ } _%>
+
 <%_ if (options.vuex) { _%>
 import store from './store'
 <%_ } _%>
@@ -23,6 +45,7 @@ Vue.use(ElementUI, { size: 'small' })
 <%_ if (options.wxui) { _%>
 Vue.use(wxui)
 <%_ } _%>
+
 <%_ if (options['va-study-public-sdk']) { _%>
 Service.then((service) => {
   Vue.config.productionTip = false
