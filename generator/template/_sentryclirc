@@ -1,0 +1,7 @@
+[defaults]
+url=null
+org=your-organization
+project=your-project-name
+
+[auth]
+token=null
