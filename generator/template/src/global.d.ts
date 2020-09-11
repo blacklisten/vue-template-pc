@@ -1,4 +1,4 @@
-<%_ if (options['va-study-public-sdk']) { _%>
+<%_ if (options.tools.includes('va-study-public-sdk')) { _%>
 import { Service } from './ajax'
 
 declare module 'vue/types/vue' {
