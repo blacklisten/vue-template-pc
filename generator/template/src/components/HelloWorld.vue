@@ -33,14 +33,29 @@
   </div>
 </template>
 
+<%_ if (options.tools.includes('typescript')) { _%>
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+  import { Component, Prop, Vue } from 'vue-property-decorator'
 
-@Component
-export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
-}
+  @Component
+  export default class HelloWorld extends Vue {
+    @Prop() private msg!: string;
+  }
 </script>
+<%_ } else { _%>
+<script>
+  export default {
+    name: 'HelloWorld',
+    props: {
+      msg: {
+        type: String
+      }
+    }
+  }
+</script>
+<%_ } _%>
+
+
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
