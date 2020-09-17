@@ -1,12 +1,5 @@
-exports.sentryConfig = {
-  devDependencies: {
-    "@sentry/browser": "^5.20.1",
-    "@sentry/cli": "^1.55.1",
-    "@sentry/integrations": "^5.20.1",
-    "@sentry/tracing": "^5.23.0",
-    "@sentry/webpack-plugin": "^1.12.1"
-  }
-}
+exports.sentryConfig = require("./sentry")
+exports.commitizenConfig = require("./commitizen")
 
 exports.extendPackage = {
   scripts: {
@@ -29,19 +22,6 @@ exports.extendPackage = {
     "stylelint-scss": "^3.17.2",
     "stylelint-webpack-plugin": "^2.0.0"
   },
-  gitHooks: {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "src/**/*.{ts,tsx,vue}": [
-      "npm run jslint",
-      "git add"
-    ],
-    "*.{scss,vue}": [
-      "npm run stylelint",
-      "git add"
-    ]
-  }
 }
 
 exports.render = {

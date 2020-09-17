@@ -1,4 +1,4 @@
-const { sentryConfig, extendPackage, render } = require('./config')
+const { sentryConfig, extendPackage, render, commitizenConfig } = require('./config')
 module.exports = (api, options, rootOptions) => {
   const { tools } = options
   // 安装一些基础的公共库
@@ -67,11 +67,15 @@ module.exports = (api, options, rootOptions) => {
       dependencies: sentryConfig.devDependencies
     })
   }
+  
+  // set devDependencies config of git cz
+  if (tools.includes("commitizen")) {
+    api.extendPackage(commitizenConfig)
+  }
 
   api.extendPackage(extendPackage)
   // 公共基础目录和文件
   api.render('./template')
-
   
   api.render(render)
 
