@@ -1,19 +1,75 @@
+// rules: 0 -> off  1 -> waring  2 -> error
+<%_ if (options.tools.includes('typescript')) { _%>
+const tsRule = {
+  // ts相关
+  // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin
+  // 可以使用any类型
+  '@typescript-eslint/no-explicit-any': 0,
+  // 允许存在无函数体的函数
+  '@typescript-eslint/no-empty-function': 0,
+  // 可以使用require，主要在webpack配置中
+  '@typescript-eslint/no-var-requires': 0,
+  // 忽略接口名以I开头
+  '@typescript-eslint/interface-name-prefix': 0,
+  // 取消函数需要返回值
+  '@typescript-eslint/explicit-function-return-type': 0,
+  // 接口和类型文字需要特定的成员定界符样式
+  '@typescript-eslint/member-delimiter-style': 2,
+  '@typescript-eslint/prefer-regexp-exec': 0,
+  'prefer-spread': 0
+}
+<%_ } _%>
+
 module.exports = {
   root: true,
   env: {
+    browser: true,
     node: true
   },
   extends: [
-    'plugin:vue/essential',
     'eslint:recommended',
+    <%_ if (options.tools.includes('typescript')) { _%>
     '@vue/typescript/recommended',
+    '@vue/prettier/@typescript-eslint',
+    <%_ } _%>
     '@vue/prettier',
-    '@vue/prettier/@typescript-eslint'
+    'plugin:vue/recommended',
+    'plugin:vue/essential',
   ],
-  'plugins': ['prettier', 'vue'],
-  parserOptions: {
-    ecmaVersion: 2020
+  <%_ if (options.tools.includes('typescript')) { _%>
+  'overrides': [
+    {
+      'files': [
+        'src/**/*.{ts,tsx}',
+        'utils/*.ts'
+      ],
+      'extends': [
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+      ],
+      'plugins': ['@typescript-eslint'],
+      'rules': {
+        ...tsRule
+      },
+      'parser': 'vue-eslint-parser',
+      'parserOptions': {
+        'ecmaFeatures': { 'jsx': true },
+        'parser': '@typescript-eslint/parser',
+        'tsconfigRootDir': __dirname,
+        'project': './tsconfig.json'
+      }
+    }
+  ],
+  <%_ } else { _%>
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "ecmaVersion": 2017,
+    "sourceType": "module"
   },
+  <%_ } _%>
+  plugins: ['prettier', 'vue'],
+  globals: {},
   rules: {
     'prettier/prettier': 'off',
     // --- vue相关 ---
@@ -28,6 +84,26 @@ module.exports = {
         }
       }
     ],
+    // 标签的右括号之前要求换行
+    'vue/html-closing-bracket-newline': ['error', {
+      'singleline': 'never',
+      'multiline': 'always'
+    }],
+    // 标签内无内容时自闭合
+    'vue/html-self-closing': ['error', {
+      'html': {
+        'void': 'never',
+        'normal': 'always',
+        'component': 'always'
+      },
+      'svg': 'always',
+      'math': 'always'
+    }],
+    // 标签名使用中划线连接
+    'vue/component-name-in-template-casing': ['error', 'kebab-case', {
+      'registeredComponentsOnly': true, // 仅检查已注册的组件
+      'ignores': []
+    }],
     // 禁止在计算属性中使用异步方法
     'vue/no-async-in-computed-properties': 2,
     // 禁止重复字段名称
@@ -47,13 +123,17 @@ module.exports = {
       }
     ],
     // 一致的缩进风格
-    'vue/html-indent': [2, 2, {
-      'attribute': 1,
-      'baseIndent': 1,
-      'closeBracket': 0,
-      'alignAttributesVertically': true,
-      'ignores': []
-    }],
+    'vue/html-indent': [
+      2,
+      2,
+      {
+        attribute: 1,
+        baseIndent: 1,
+        closeBracket: 0,
+        alignAttributesVertically: true,
+        ignores: []
+      }
+    ],
     // eslint相关
     // https://cn.eslint.org/docs/rules/
     // 允许使用异步函数作为Promise executor
@@ -62,9 +142,11 @@ module.exports = {
     'no-eq-null': 2,
     // 禁用不必要的 return await
     'no-return-await': 2,
+    // no-extra-semi
+    'no-extra-semi': 2,
     // 禁止使用不带 await 表达式的 async 函数
     'require-await': 2,
-    // 禁止将 undefined 作为标识符(比如var foo = undefined; if (foo === undefined);)
+    // 禁止将 undefined 作为标识符(比如var foo = undefined; if (foo === undefined);) -> 忽略
     'no-undefined': 0,
     // 该规则强制数组开括号后和闭括号前不需要空格[1, 2, 3]
     'array-bracket-spacing': [2, 'never'],
@@ -78,8 +160,10 @@ module.exports = {
         allowSingleLine: true
       }
     ],
+    // 要求使用扩展运算符而非 .apply() -> 忽略
     'prefer-spread': 0,
     // 在对象和数组文字中，当最后一个元素或属性与闭括号 ] 或 } 在 不同的行时，允许（但不要求）使用拖尾逗号；当在 同一行时，禁止使用拖尾逗号
+    // https://cn.eslint.org/docs/rules/comma-dangle
     'comma-dangle': [2, 'only-multiline'],
     // 逗号前面不允许空格，后面加空格
     'comma-spacing': [
@@ -98,9 +182,13 @@ module.exports = {
     // 文件末尾加换行
     'eol-last': 2,
     // 要求使用 === 和 !==
-    'eqeqeq': [2, 'always', {
-      null: 'ignore'
-    }],
+    eqeqeq: [
+      2,
+      'always',
+      {
+        null: 'ignore'
+      }
+    ],
     // 对象字面量键和值之间使用一致的空格(冒号后加空格，前面不能有空格)
     'key-spacing': [
       2,
@@ -122,7 +210,6 @@ module.exports = {
       2,
       {
         beforeBlockComment: true, // 要求在块级注释之前有一空行 /* ------- */
-        allowClassStart: true,
         beforeLineComment: false // 要求在行级注释之前有一空行 // ---------
       }
     ],
@@ -145,6 +232,8 @@ module.exports = {
     ],
     // 函数调用之间不需要空格
     'no-spaced-func': 2,
+    // // 抛出异常时禁止使用字面量(throw 2)
+    // 'no-throw-literal': 2,
     // 禁用行尾空格
     'no-trailing-spaces': 2,
     // 不允许初始化变量值为 undefined
@@ -212,15 +301,7 @@ module.exports = {
       2,
       'always',
       {
-        markers: [
-          'global',
-          'globals',
-          'eslint',
-          'eslint-disable',
-          '*package',
-          '!',
-          ','
-        ]
+        markers: ['global', 'globals', 'eslint', 'eslint-disable', '*package', '!', ',']
       }
     ],
     // 强制模板字符串中空格的使用，不使用空格
@@ -245,14 +326,8 @@ module.exports = {
         after: true
       }
     ],
-    // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin
-    // 可以使用any类型
-    '@typescript-eslint/no-explicit-any': 0,
-    // 允许存在无函数体的函数
-    '@typescript-eslint/no-empty-function': 0,
-    // 可以使用require，主要在webpack配置中
-    '@typescript-eslint/no-var-requires': 0,
-    // 忽略接口名以I开头
-    '@typescript-eslint/interface-name-prefix': 0
+    <%_ if (options.tools.includes('typescript')) { _%>
+    ...tsRule
+    <%_ } _%>
   }
 }

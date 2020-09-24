@@ -5,7 +5,6 @@ import filter from './filters/index'
 <%_ if (options.tools.includes('sentry')) { _%>
 import '../utils/sentry'
 <%_ } _%>
-
 <%_ if (options.tools.includes('vuex')) { _%>
 import store from './store'
 <%_ } _%>
@@ -20,14 +19,12 @@ import 'element-ui/lib/theme-chalk/index.css'
 <%_ if (options.tools.includes('wxui')) { _%>
 import wxui from 'wxui'
 <%_ } _%>
-
 <%_ if (options.tools.includes('elementUI')) { _%>
 Vue.use(ElementUI, { size: 'small' })
 <%_ } _%>
 <%_ if (options.tools.includes('wxui')) { _%>
 Vue.use(wxui)
 <%_ } _%>
-
 <%_ if (options.tools.includes('va-study-public-sdk')) { _%>
 Service.then((service) => {
   Vue.config.productionTip = false

@@ -1,41 +1,58 @@
-const { sentryConfig, extendPackage, render, commitizenConfig } = require('./config')
+const { sentryConfig, extendPackage, render, commitizenConfig, typescriptConfig } = require('./config')
+
 module.exports = (api, options, rootOptions) => {
   const { tools } = options
-  // 安装一些基础的公共库
-  if (tools.includes("vuex")) {
+
+  const IS_TYPESCRIPT = tools.includes('typescript')
+  const INCLUDE_VUEX = tools.includes("vuex")
+  const INCLUDE_SAVML = tools.includes("savml")
+  const INCLUDE_VA_STUDY_PUBLIC_SDK = tools.includes("va-study-public-sdk")
+  const INCLUDE_ELEMENT_UI = tools.includes("elementUI")
+  const INCLUDE_WX_TOOLS = tools.includes("wxTools")
+  const INCLUDE_WX_UI = tools.includes("wxui")
+  const INCLUDE_SENTRY = tools.includes("sentry")
+  const INCLUDE_COMMITIZEN = tools.includes("commitizen")
+
+  if (IS_TYPESCRIPT) {
+    api.extendPackage(typescriptConfig)
+  } else {
     api.extendPackage({
-      dependencies: {
-        "vuex": "^3.4.0",
-        "vuex-class": "^0.3.2"
+      "devDependencies": {
+        "babel-eslint": "^10.1.0"
       }
     })
-    api.render('./vuex')
   }
 
-  if (tools.includes("savml")) {
+  // 安装一些基础的公共库
+  if (INCLUDE_VUEX) {
+    api.extendPackage({
+      dependencies: {
+        "vuex": "^3.4.0"
+      }
+    })
+    api.render( IS_TYPESCRIPT ? './common/cli-typescripe/vuex' : './common/cli-js/vuex')
+  }
+
+  if (INCLUDE_SAVML) {
     api.extendPackage({
       dependencies: {
         "savml": "^1.0.101"
       }
     })
-    api.render('./ajax')
+    api.render(IS_TYPESCRIPT ? './common/cli-typescripe/ajax' : './common/cli-js/ajax')
   }
 
-  if (tools.includes("va-study-public-sdk")) {
+  if (INCLUDE_VA_STUDY_PUBLIC_SDK) {
     api.extendPackage({
       dependencies: {
         "va-study-public-sdk": "1.0.40",
         "savml": "^1.0.101"
       }
     })
-    api.render('./ajax')
-  }
-  
-  if (tools.includes("savml") || tools.includes('va-study-public-sdk')) {
-    api.render('./ajax')
+    api.render(IS_TYPESCRIPT ? './common/cli-typescripe/ajax' : './common/cli-js/ajax')
   }
 
-  if (tools.includes("elementUI")) {
+  if (INCLUDE_ELEMENT_UI) {
     api.extendPackage({
       dependencies: {
         "element-ui": "^2.13.2"
@@ -43,7 +60,7 @@ module.exports = (api, options, rootOptions) => {
     })
   }
 
-  if (tools.includes("wxTools")) {
+  if (INCLUDE_WX_TOOLS) {
     api.extendPackage({
       dependencies: {
         "wx-tools": "^0.0.7"
@@ -51,7 +68,7 @@ module.exports = (api, options, rootOptions) => {
     })
   }
 
-  if (tools.includes("wxui")) {
+  if (INCLUDE_WX_UI) {
     api.extendPackage({
       dependencies: {
         "wxui": "^0.6.32"
@@ -60,23 +77,38 @@ module.exports = (api, options, rootOptions) => {
   }
 
   // 设置sentry相关
-  if (tools.includes("sentry")) {
+  if (INCLUDE_SENTRY) {
     render['./.sentryclirc'] = './template/_sentryclirc'
-    render['./utils/sentry.ts'] = './extension/_sentry.ts.template'
+    if (IS_TYPESCRIPT) {
+      render['./utils/sentry.ts'] = './extension/_sentry.ts.template'
+    } else {
+      render['./utils/sentry.js'] = './extension/_sentry.ts.template'
+    }
     api.extendPackage({
       dependencies: sentryConfig.devDependencies
     })
   }
   
   // set devDependencies config of git cz
-  if (tools.includes("commitizen")) {
+  if (INCLUDE_COMMITIZEN) {
     api.extendPackage(commitizenConfig)
   }
 
   api.extendPackage(extendPackage)
   // 公共基础目录和文件
-  api.render('./template')
   
-  api.render(render)
+  if (IS_TYPESCRIPT) {
+    api.render('./common/cli-typescripe/template', { skipLibCheck: true })
+    require('./convert')(api)
+  }
+  else {
+    api.render('./common/cli-js/template', { skipLibCheck: true })
+  }
+
+  // typescript相关
+  api.render('./template', { skipLibCheck: true })
+
+
+  api.render(render) 
 
 }

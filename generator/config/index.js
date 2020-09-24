@@ -1,5 +1,6 @@
 exports.sentryConfig = require("./sentry")
 exports.commitizenConfig = require("./commitizen")
+exports.typescriptConfig = require("./typescript")
 
 exports.extendPackage = {
   scripts: {
@@ -20,14 +21,19 @@ exports.extendPackage = {
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.0.0",
     "stylelint-scss": "^3.17.2",
-    "stylelint-webpack-plugin": "^2.0.0"
-  },
+    "stylelint-webpack-plugin": "^2.0.0",
+    "eslint-webpack-plugin": "^1.0.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "@vue/cli-plugin-eslint": "^4.3.0",
+    "@vue/eslint-config-prettier": "^6.0.0"
+  }
 }
 
 exports.render = {
   './.eslintrc.js': './template/_eslintrc.js',
   './.eslintignore': './template/_eslintignore',
-  './.editorconfig': './template/_editorconfig',
   './.editorconfig': './template/_editorconfig',
   './.gitignore': './template/_gitignore',
   './.prettierignore': './template/_prettierignore',
