@@ -3,7 +3,7 @@ declare module '*.vue' {
   export default Vue
 }
 
-<%_ if (options.tools.includes('wxui')) { _%>
+<%_ if (options.ui.includes('wxui')) { _%>
 declare module 'wxui' {
   const WxUi: any
   export default WxUi

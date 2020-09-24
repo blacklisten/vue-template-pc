@@ -1,19 +1,17 @@
 const { sentryConfig, extendPackage, render, commitizenConfig, typescriptConfig } = require('./config')
 
 module.exports = (api, options, rootOptions) => {
-  const { tools } = options
+  const { tools, ui, classComponent, sentry } = options
 
-  const IS_TYPESCRIPT = tools.includes('typescript')
   const INCLUDE_VUEX = tools.includes("vuex")
   const INCLUDE_SAVML = tools.includes("savml")
   const INCLUDE_VA_STUDY_PUBLIC_SDK = tools.includes("va-study-public-sdk")
-  const INCLUDE_ELEMENT_UI = tools.includes("elementUI")
   const INCLUDE_WX_TOOLS = tools.includes("wxTools")
-  const INCLUDE_WX_UI = tools.includes("wxui")
-  const INCLUDE_SENTRY = tools.includes("sentry")
   const INCLUDE_COMMITIZEN = tools.includes("commitizen")
+  const INCLUDE_ELEMENT_UI = ui.includes("elementUI")
+  const INCLUDE_WX_UI = ui.includes("wxui")
 
-  if (IS_TYPESCRIPT) {
+  if (classComponent) {
     api.extendPackage(typescriptConfig)
   } else {
     api.extendPackage({
@@ -30,7 +28,7 @@ module.exports = (api, options, rootOptions) => {
         "vuex": "^3.4.0"
       }
     })
-    api.render( IS_TYPESCRIPT ? './common/cli-typescripe/vuex' : './common/cli-js/vuex')
+    api.render( classComponent ? './common/cli-typescripe/vuex' : './common/cli-js/vuex')
   }
 
   if (INCLUDE_SAVML) {
@@ -39,7 +37,7 @@ module.exports = (api, options, rootOptions) => {
         "savml": "^1.0.101"
       }
     })
-    api.render(IS_TYPESCRIPT ? './common/cli-typescripe/ajax' : './common/cli-js/ajax')
+    api.render(classComponent ? './common/cli-typescripe/ajax' : './common/cli-js/ajax')
   }
 
   if (INCLUDE_VA_STUDY_PUBLIC_SDK) {
@@ -49,7 +47,7 @@ module.exports = (api, options, rootOptions) => {
         "savml": "^1.0.101"
       }
     })
-    api.render(IS_TYPESCRIPT ? './common/cli-typescripe/ajax' : './common/cli-js/ajax')
+    api.render(classComponent ? './common/cli-typescripe/ajax' : './common/cli-js/ajax')
   }
 
   if (INCLUDE_ELEMENT_UI) {
@@ -77,9 +75,9 @@ module.exports = (api, options, rootOptions) => {
   }
 
   // 设置sentry相关
-  if (INCLUDE_SENTRY) {
+  if (sentry) {
     render['./.sentryclirc'] = './template/_sentryclirc'
-    if (IS_TYPESCRIPT) {
+    if (classComponent) {
       render['./utils/sentry.ts'] = './extension/_sentry.ts.template'
     } else {
       render['./utils/sentry.js'] = './extension/_sentry.ts.template'
@@ -97,7 +95,7 @@ module.exports = (api, options, rootOptions) => {
   api.extendPackage(extendPackage)
   // 公共基础目录和文件
   
-  if (IS_TYPESCRIPT) {
+  if (classComponent) {
     api.render('./common/cli-typescripe/template', { skipLibCheck: true })
     require('./convert')(api)
   }

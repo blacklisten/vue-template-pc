@@ -1,5 +1,5 @@
 // rules: 0 -> off  1 -> waring  2 -> error
-<%_ if (options.tools.includes('typescript')) { _%>
+<%_ if (options.classComponent) { _%>
 const tsRule = {
   // ts相关
   // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin
@@ -28,7 +28,7 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    <%_ if (options.tools.includes('typescript')) { _%>
+    <%_ if (options.classComponent) { _%>
     '@vue/typescript/recommended',
     '@vue/prettier/@typescript-eslint',
     <%_ } _%>
@@ -36,7 +36,7 @@ module.exports = {
     'plugin:vue/recommended',
     'plugin:vue/essential',
   ],
-  <%_ if (options.tools.includes('typescript')) { _%>
+  <%_ if (options.classComponent) { _%>
   'overrides': [
     {
       'files': [
@@ -326,7 +326,7 @@ module.exports = {
         after: true
       }
     ],
-    <%_ if (options.tools.includes('typescript')) { _%>
+    <%_ if (options.classComponent) { _%>
     ...tsRule
     <%_ } _%>
   }

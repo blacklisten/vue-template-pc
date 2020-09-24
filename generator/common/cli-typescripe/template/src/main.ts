@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import filter from './filters/index'
-<%_ if (options.tools.includes('sentry')) { _%>
+<%_ if (options.sentry) { _%>
 import '../utils/sentry'
 <%_ } _%>
 <%_ if (options.tools.includes('vuex')) { _%>
@@ -12,17 +12,17 @@ import store from './store'
 // 服务
 import Service from './ajax'
 <%_ } _%>  
-<%_ if (options.tools.includes('elementUI')) { _%>
+<%_ if (options.ui.includes('wxui')) { _%>
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 <%_ } _%>
-<%_ if (options.tools.includes('wxui')) { _%>
+<%_ if (options.ui.includes('wxui')) { _%>
 import wxui from 'wxui'
 <%_ } _%>
-<%_ if (options.tools.includes('elementUI')) { _%>
+<%_ if (options.ui.includes('wxui')) { _%>
 Vue.use(ElementUI, { size: 'small' })
 <%_ } _%>
-<%_ if (options.tools.includes('wxui')) { _%>
+<%_ if (options.ui.includes('wxui')) { _%>
 Vue.use(wxui)
 <%_ } _%>
 <%_ if (options.tools.includes('va-study-public-sdk')) { _%>
