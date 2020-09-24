@@ -12,7 +12,7 @@
   - [x] 自定义引入`wxTools` `default: true`
   - [x] 自定义引入`wxui` `default: false`
 - [ ] 一个可配置化、功能多样的`vue`模板
-  - [ ] 支持`javaScript typeScript`自由选择
+  - [x] 支持`javaScript typeScript`自由选择
   - [ ] 支持`vue2.0 vue3.0`自由选择
   - [ ] 支持是否适配`mobile`
   - [ ] 支持是否引入`electron`
