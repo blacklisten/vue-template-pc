@@ -2,7 +2,7 @@
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const path = require('path')
-<%_ if (options.tools.includes("sentry")) { _%>
+<%_ if (options.sentry) { _%>
 const SentryCliPlugin = require('@sentry/webpack-plugin')
 const { name, version } = require('./package.json')
 <%_ } _%>
@@ -20,7 +20,7 @@ module.exports = {
   outputDir: 'dist',
   assetsDir: 'static',
   // 生产环境 sourceMap
-  productionSourceMap: <%= options.tools.includes("sentry") ? 'true' : 'false' _%>,
+  productionSourceMap: <%= options.sentry ? 'true' : 'false' _%>,
   // 配置高于chainWebpack中关于 css loader 的配置
   css: {
     // 是否开启支持 foo.module.css 样式
@@ -39,7 +39,7 @@ module.exports = {
       .set('@', path.resolve('./src'))
       .set('@utils', path.resolve('./utils'))
 
-    <%_ if (options.tools.includes("typescript")) { _%>
+    <%_ if (options.classComponent) { _%>
     config.resolve
     .extensions
       .prepend('.ts')
@@ -75,7 +75,7 @@ module.exports = {
     }
     if (process.env.NODE_ENV === 'production') {
       // do something for production
-      <%_ if (options.tools.includes("sentry")) { _%>
+      <%_ if (options.sentry) { _%>
         const sentry = new SentryCliPlugin({
           include: './dist', // 作用的文件夹
           release: `${name}@${version}`, // 版本号，需要维护package中的name和version字段
