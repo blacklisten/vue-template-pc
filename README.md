@@ -13,9 +13,9 @@
   - [x] 自定义引入`wxui` `default: false`
 - [ ] 一个可配置化、功能多样的`vue`模板
   - [x] 支持`javaScript typeScript`自由选择
-  - [ ] 支持`vue2.0 vue3.0`自由选择
+  - [ ] 支持`vue2.0 vue3.0`自由选择 [issues](https://github.com/vaopen/vue-template-pc/issues/4)
   - [ ] 支持是否适配`mobile`
-  - [ ] 支持是否引入`electron`
+  - [ ] 支持是否引入`electron`，只支持其**render**层业务逻辑，需公共封装**message**回调 [issues](https://github.com/vaopen/vue-template-pc/issues/6)
 
 ## 使用👍
 
