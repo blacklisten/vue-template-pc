@@ -1,7 +1,7 @@
-const { sentryConfig, extendPackage, render, commitizenConfig, typescriptConfig } = require('./config')
+const { sentryConfig, extendPackage, render, commitizenConfig, typescriptConfig, electronConfig } = require('./config')
 
 module.exports = (api, options, rootOptions) => {
-  const { tools, ui, classComponent, sentry } = options
+  const { tools, ui, classComponent, sentry, electron } = options
 
   const INCLUDE_VUEX = tools.includes("vuex")
   const INCLUDE_SAVML = tools.includes("savml")
@@ -90,6 +90,17 @@ module.exports = (api, options, rootOptions) => {
   // set devDependencies config of git cz
   if (INCLUDE_COMMITIZEN) {
     api.extendPackage(commitizenConfig)
+  }
+
+  //set electron support
+  if(electron) {
+    api.extendPackage(electronConfig)
+    render['./build/build'] = './extension/electron.template/build/build.js'
+    render['./build/electron.dev'] = './extension/electron.template/build/electron.dev.js'
+    render['./build/webpack.main.config.js'] = './extension/electron.template/build/webpack.main.config.js'
+    const ext = classComponent ? 'ts' : 'js'
+    render['./.electron-main/main.dev.' + ext] = './extension/electron.template/.electron-main/main.dev.ts'
+    render['./.electron-main/main.' + ext] = './extension/electron.template/.electron-main/main.ts'
   }
 
   api.extendPackage(extendPackage)
