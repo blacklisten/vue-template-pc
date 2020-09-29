@@ -23,4 +23,10 @@ module.exports = [
     message: `是否使用生产环境异常监控?`,
     default: true
   },
+  {
+    name: `electron`,
+    type: `confirm`,
+    message: `是否集成electron?`,
+    default: true
+  },
 ]

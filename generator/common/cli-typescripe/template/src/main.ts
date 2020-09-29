@@ -25,6 +25,10 @@ Vue.use(ElementUI, { size: 'small' })
 <%_ if (options.ui.includes('wxui')) { _%>
 Vue.use(wxui)
 <%_ } _%>
+<%_ if (options.electron) { _%>
+import initElectron from '@utils/electron'
+initElectron()
+<%_ } _%>
 <%_ if (options.tools.includes('va-study-public-sdk')) { _%>
 Service.then((service) => {
   Vue.config.productionTip = false
