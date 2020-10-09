@@ -36,3 +36,5 @@ npm run lint:fix or yarn lint:fix
 - *va-study-public-sdk wxTools wxui* 需使用wx自己的npm源
 
 - *No matching version found for wx-tools* 请忽略
+
+- 如需更新最新的包运行```npm-check -u``` or ```yarn upgrade-interactive [--latest]```
