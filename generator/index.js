@@ -1,7 +1,7 @@
-const { sentryConfig, extendPackage, render, commitizenConfig, typescriptConfig } = require('./config')
+const { sentryConfig, extendPackage, render, commitizenConfig, typescriptConfig, electronConfig } = require('./config')
 
 module.exports = (api, options, rootOptions) => {
-  const { tools, ui, classComponent, sentry } = options
+  const { tools, ui, classComponent, sentry, electron } = options
 
   const INCLUDE_VUEX = tools.includes("vuex")
   const INCLUDE_SAVML = tools.includes("savml")
@@ -85,6 +85,13 @@ module.exports = (api, options, rootOptions) => {
     api.extendPackage({
       dependencies: sentryConfig.devDependencies
     })
+  }
+
+  // 设置electron相关
+  if(electron) {
+    const ext = classComponent ? 'ts' : 'js'
+    render[`./utils/electron.${ext}`] = `./extension/electron/${ext}/electron.${ext}`
+    api.extendPackage(electronConfig)
   }
   
   // set devDependencies config of git cz

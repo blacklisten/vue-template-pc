@@ -1,6 +1,7 @@
 exports.sentryConfig = require("./sentry")
 exports.commitizenConfig = require("./commitizen")
 exports.typescriptConfig = require("./typescript")
+exports.electronConfig = require("./electron")
 
 exports.extendPackage = {
   scripts: {
